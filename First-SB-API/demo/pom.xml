@@ -34,6 +34,12 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>2.4.0</version>
 		</dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -44,5 +50,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
+
 
 </project>
