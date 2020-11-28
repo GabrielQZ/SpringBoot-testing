@@ -29,6 +29,8 @@ public class User {
 
         emailValidationCode = genValidationCode();
 
+        System.out.println(emailValidationCode);
+
         //emails can not be validated on User creation this will need to be done using a authorized put request later on
         isEmailValidated = false;
 
