@@ -23,7 +23,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -35,6 +34,18 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+<!--		USING JASYPT FOR ENCRYPTING ENDPOINTS/DB PASSWORDS-->
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+<!--		ALT JASYPT DEP.-->
+<!--		<dependency>-->
+<!--			<groupId>com.github.ulisesbocchio</groupId>-->
+<!--			<artifactId>jasypt-spring-boot-starter</artifactId>-->
+<!--			<version>2.1.0</version>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>
