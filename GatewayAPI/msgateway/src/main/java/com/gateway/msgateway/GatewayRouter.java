@@ -1,15 +1,17 @@
 package com.gateway.msgateway;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
 public class GatewayRouter {
+
+    String NO_DATA_ERROR = "{error: \"No data present in request\"}";
 
     @Autowired
     private Environment env;
@@ -36,8 +38,32 @@ public class GatewayRouter {
     //endpoints to other MS servers will be stored privately in the gateways code
 
     //AUTHORIZED ROUTE
+    @PutMapping("/auth")
+    public void authorizedRoute(){
+
+    }
 
     //PUBLIC ROUTE
+    @PutMapping(
+            value = "/public",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+
+    public String publicRoute(@RequestBody String rawData){
+
+        try {
+        JSONObject request = new JSONObject(rawData);
+
+        System.out.println(request.get("action"));
+
+        System.out.println(request.get("data"));
+        return request.get("data").toString();
+
+        } catch (JSONException e ) {
+            return NO_DATA_ERROR;
+        }
+    }
 
 }
 
