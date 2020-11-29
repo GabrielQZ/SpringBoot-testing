@@ -19,6 +19,12 @@
 	</properties>
 
 	<dependencies>
+<!--		SECURITY DEP.-->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-security</artifactId>-->
+<!--		</dependency>-->
+<!--		SPRING STARTERS-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -34,18 +40,20 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--		USING JASYPT FOR ENCRYPTING ENDPOINTS/DB PASSWORDS-->
+<!--		HANDLING JSON-->
 		<dependency>
-			<groupId>com.github.ulisesbocchio</groupId>
-			<artifactId>jasypt-spring-boot</artifactId>
-			<version>2.1.1</version>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20201115</version>
 		</dependency>
-<!--		ALT JASYPT DEP.-->
-<!--		<dependency>-->
-<!--			<groupId>com.github.ulisesbocchio</groupId>-->
-<!--			<artifactId>jasypt-spring-boot-starter</artifactId>-->
-<!--			<version>2.1.0</version>-->
-<!--		</dependency>-->
+<!--		CREATING HTTP REQUEST (APACHE)-->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.13</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>
