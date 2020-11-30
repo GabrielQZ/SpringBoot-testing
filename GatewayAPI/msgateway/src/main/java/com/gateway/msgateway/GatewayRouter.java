@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GatewayRouter {
 
-    String NO_DATA_ERROR = "{error: \"No data present in request\"}";
+    String MISSING_DATA_ERROR = "{error: \"No 'action' OR 'data' present in request\"}";
 
     @Autowired
     private Environment env;
@@ -22,8 +22,9 @@ public class GatewayRouter {
         return "Hello there user!";
     }
 
-    @GetMapping("/testenvprop")
+    @GetMapping("/test")
     public String getProps(){
+
         return env.getProperty("authSystem.endpoint");
     }
 
@@ -53,15 +54,30 @@ public class GatewayRouter {
     public String publicRoute(@RequestBody String rawData){
 
         try {
-        JSONObject request = new JSONObject(rawData);
+            
+            JSONObject rawRequest = new JSONObject(rawData);
 
-        System.out.println(request.get("action"));
+            //these two declarations will trigger exceptions if not present in the request
+            String reqData = rawRequest.get("data").toString();
+            String reqAction = rawRequest.get("action").toString();
 
-        System.out.println(request.get("data"));
-        return request.get("data").toString();
+            MSRequest requestDetails = RequestMap.reqMap.get(reqAction);
+
+            String requestMethod = requestDetails.getMethod();
+            String requestURL = env.getProperty(requestDetails.getUrlKey());
+
+            JSONObject nextRequest = new JSONObject();
+            nextRequest.put("data", reqData);
+            nextRequest.put("method", requestMethod);
+            nextRequest.put("endpoint", requestURL);
+
+            System.out.println(nextRequest);
+
+            return nextRequest.toString();
+
 
         } catch (JSONException e ) {
-            return NO_DATA_ERROR;
+            return MISSING_DATA_ERROR;
         }
     }
 
