@@ -46,13 +46,6 @@
 			<artifactId>json</artifactId>
 			<version>20201115</version>
 		</dependency>
-<!--		CREATING HTTP REQUEST (APACHE)-->
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.5.13</version>
-		</dependency>
-
 
 	</dependencies>
 
