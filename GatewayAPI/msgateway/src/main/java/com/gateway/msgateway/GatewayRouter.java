@@ -58,53 +58,64 @@ public class GatewayRouter {
             MSRequest requestDetails = RequestMap.reqMap.get(reqAction);
 
             String requestMethod = requestDetails.getMethod();
-            String requestURL = env.getProperty(requestDetails.getUrlKey());
 
+            String requestURL = env.getProperty(requestDetails.getUrlKey());
+            //the reqDetails url key should never point to a null prop. but incase it does, throw an error message
             if (requestURL == null)
                 return GatewayErrors.REQUEST_URL_MISMATCH;
 
             return sendRequest(reqData, requestURL, requestMethod);
 
         } catch (JSONException e ) {
-//            e.printStackTrace();
+            //e.printStackTrace();
             return GatewayErrors.MISSING_DATA_ERROR;
         } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("\nError with request being sent from Gateway\n");
-            return GatewayErrors.BAD_REQUEST_ERROR;
+            //e.printStackTrace();
+            //System.out.println("\nError with request being sent from Gateway\n");
+            return GatewayErrors.UNKNOWN_REQUEST_ERROR;
         }
     }
 
     private String sendRequest( String data, String endpoint, String method) throws Exception {
-
-        //the 'body' only gets used for POST and PUT request
-        var body = HttpRequest.BodyPublishers.ofString(data);
-        var requestBuilder = HttpRequest.newBuilder();
-
-        switch (method) {
-            case "POST" -> requestBuilder = requestBuilder.POST(body);
-            case "PUT" -> requestBuilder = requestBuilder.PUT(body);
-            case "DELETE" -> requestBuilder = requestBuilder.DELETE();
-            case "GET" -> requestBuilder = requestBuilder.GET();
-            default -> System.out.println("\nMETHOD NOT PROVIDED (ln 97 GatewayRouter)");
-        }
-
-        HttpRequest builtReq = requestBuilder
-                .uri(URI.create(
-                        method.equals("GET") || method.equals("DELETE")
-                        ? endpoint + data : endpoint
-                ))
-                .header("Content-Type", "application/json")
-                .build();
-
         try {
 
+            //the 'body' only gets used for POST and PUT request,
+            // doing it here so i can keep the switch statement clean and it doesn't take much to process
+            var body = HttpRequest.BodyPublishers.ofString(data);
+            //start building the request
+            var requestBuilder = HttpRequest.newBuilder();
+
+            switch (method) { //listing methods in order of most frequently used
+                case "PUT" -> requestBuilder = requestBuilder.PUT(body);
+                case "GET" -> requestBuilder = requestBuilder.GET();
+                case "POST" -> requestBuilder = requestBuilder.POST(body);
+                case "DELETE" -> requestBuilder = requestBuilder.DELETE();
+                default -> System.out.println("\nMETHOD NOT PROVIDED (GatewayRouter -> sendRequest)");
+            }
+
+            //once the method is determined the URI gets added along with headers
+            // (content type doesnt hurt to add for GET/DELETE)
+            HttpRequest builtReq = requestBuilder
+                    .uri(URI.create(
+                            //'data' gets utilized as a uri extension for GET/DELETE
+                            //but post and put only need one route, if more than one put/post actions are needed,
+                            //the request body can determine the actions of the receiving service
+                            method.equals("GET") || method.equals("DELETE")
+                            ? endpoint + data : endpoint
+                    ))
+                    .header("Content-Type", "application/json")
+                    .build();
+
+            //actually make request
             HttpResponse<String> response = httpClient.send(builtReq, HttpResponse.BodyHandlers.ofString());
             //System.out.println("\nStatus Code from request: " + response.statusCode());
             return response.body();
 
         } catch ( ConnectException e ) {
             return GatewayErrors.CONNECTION_ERROR;
+        } catch ( Exception e ){
+            e.printStackTrace();
+            return GatewayErrors.UNKNOWN_REQUEST_ERROR;
         }
 
     }
