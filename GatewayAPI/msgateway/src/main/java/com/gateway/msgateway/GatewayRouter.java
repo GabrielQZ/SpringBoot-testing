@@ -31,6 +31,11 @@ public class GatewayRouter {
     //authorized routes will pass along headers (where auth keys will be stored) and public routes will not
     //endpoints to other MS servers will be stored privately in the gateways code
 
+    @GetMapping("/test")
+    public String testGet() {
+        return "test";
+    }
+
     //AUTHORIZED ROUTE
     @PutMapping("/auth")
     public void authorizedRoute(){
@@ -57,6 +62,10 @@ public class GatewayRouter {
 
             MSRequest requestDetails = RequestMap.reqMap.get(reqAction);
 
+            if (requestDetails == null) return GatewayErrors.REQUEST_ACTION_MISMATCH;
+
+            if (!requestDetails.isPublic()) return GatewayErrors.REQUEST_NEEDS_AUTH;
+
             String requestMethod = requestDetails.getMethod();
 
             String requestURL = env.getProperty(requestDetails.getUrlKey());
@@ -72,7 +81,7 @@ public class GatewayRouter {
             //e.printStackTrace();
             return GatewayErrors.MISSING_DATA_ERROR;
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             //System.out.println("\nError with request being sent from Gateway\n");
             return GatewayErrors.UNKNOWN_REQUEST_ERROR;
         }

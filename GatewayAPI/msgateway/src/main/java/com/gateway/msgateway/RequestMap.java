@@ -13,10 +13,10 @@ public class RequestMap {
 
     static final HashMap<String, MSRequest> reqMap = new HashMap<>() {
         {
-            put(createUser, new MSRequest("POST", authSystemEndPoint));
-            put(loginUser, new MSRequest("PUT", authSystemEndPoint, "login"));
-            put(getOneUser, new MSRequest("GET", authSystemEndPoint, "id"));
-            put(deleteOneUser, new MSRequest("DELETE", authSystemEndPoint, "id"));
+            put(createUser, new MSRequest(true,"POST", authSystemEndPoint));
+            put(loginUser, new MSRequest(true, "PUT", authSystemEndPoint, "login"));
+            put(getOneUser, new MSRequest(true, "GET", authSystemEndPoint, "id"));
+            put(deleteOneUser, new MSRequest(true, "DELETE", authSystemEndPoint, "id"));
         }
     };
 }

@@ -8,14 +8,18 @@ public class MSRequest {
 
     private final String urlExtension;
 
-    public MSRequest(String method, String urlKey, String urlExtension) {
+    private final boolean isPublic;
+
+    public MSRequest(boolean isPublic, String method, String urlKey, String urlExtension) {
         this.urlExtension = urlExtension;
+        this.isPublic = isPublic;
         this.method = method;
         this.urlKey = urlKey;
     }
 
-    public MSRequest(String method, String urlKey) {
+    public MSRequest(boolean isPublic, String method, String urlKey) {
         this.urlExtension = "";
+        this.isPublic = isPublic;
         this.method = method;
         this.urlKey = urlKey;
     }
@@ -30,5 +34,9 @@ public class MSRequest {
 
     public String getUrlExtension() {
         return urlExtension;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
     }
 }
