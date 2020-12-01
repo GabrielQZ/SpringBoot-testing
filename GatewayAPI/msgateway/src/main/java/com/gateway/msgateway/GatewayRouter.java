@@ -7,6 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.SSLException;
 import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -88,6 +89,9 @@ public class GatewayRouter {
     }
 
     private String sendRequest( String data, String endpoint, String method) throws Exception {
+            //System.out.println(method);
+            //System.out.println(data);
+            //System.out.println(endpoint);
         try {
 
             //the 'body' only gets used for POST and PUT request,
@@ -104,6 +108,7 @@ public class GatewayRouter {
                 default -> System.out.println("\nMETHOD NOT PROVIDED (GatewayRouter -> sendRequest)");
             }
 
+
             //once the method is determined the URI gets added along with headers
             // (content type doesn't hurt to add for GET/DELETE)
             HttpRequest builtReq = requestBuilder
@@ -112,7 +117,7 @@ public class GatewayRouter {
                             //but post and put only need one route, if more than one put/post actions are needed,
                             //the request body can determine the actions of the receiving service
                             method.equals("GET") || method.equals("DELETE")
-                            ? endpoint + data : endpoint
+                            ? endpoint + "/" + data : endpoint
                     ))
                     .header("Content-Type", "application/json")
                     .build();
@@ -125,9 +130,10 @@ public class GatewayRouter {
 
         } catch ( ConnectException e ) {
             return GatewayErrors.CONNECTION_ERROR;
-        } catch ( Exception e ){
-            e.printStackTrace();
-            return GatewayErrors.UNKNOWN_REQUEST_ERROR;
+        } catch ( SSLException e ) {
+            return GatewayErrors.CHECK_PROTOCOL_ERROR;
+        } catch ( IllegalArgumentException e ) {
+            return GatewayErrors.BAD_REQUEST_DATA;
         }
 
     }

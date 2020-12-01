@@ -9,4 +9,6 @@ public class GatewayErrors {
     public static final String INTERNAL_SERVER_ERROR = "{error: \"Request failed: Internal Server Error In Another Server\"}";
     public static final String REQUEST_ACTION_MISMATCH = "{error: \"Request not made: There is no request to match the given action\"}";
     public static final String REQUEST_NEEDS_AUTH = "{error: \"Request not made: This request needs authorization to be made\"}";
+    public static final String CHECK_PROTOCOL_ERROR = "{error: \"Request failed: Check URI protocol\"}";
+    public static final String BAD_REQUEST_DATA = "{error: \"Request not made: Request data caused error in Gateway\"}";
 }
