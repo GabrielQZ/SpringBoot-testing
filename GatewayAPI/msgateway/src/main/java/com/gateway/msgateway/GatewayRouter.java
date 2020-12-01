@@ -108,6 +108,7 @@ public class GatewayRouter {
 
             //actually make request
             HttpResponse<String> response = httpClient.send(builtReq, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() == 500) return GatewayErrors.INTERNAL_SERVER_ERROR;
             //System.out.println("\nStatus Code from request: " + response.statusCode());
             return response.body();
 

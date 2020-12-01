@@ -6,5 +6,5 @@ public class GatewayErrors {
     public static final String MISSING_DATA_ERROR = "{error: \"Request not made: No 'action' OR 'data' present in request\"}";
     public static final String UNKNOWN_REQUEST_ERROR = "{error: \"Request failed: Unknown reason\"}";
     public static final String REQUEST_URL_MISMATCH = "{error: \"Request not made: There is no url to make the given action\"}";
-
+    public static final String INTERNAL_SERVER_ERROR = "{error: \"Request failed: Internal Server Error In Another Server\"}";
 }
