@@ -1,0 +1,1 @@
+ignoring application props. that will make project run with the correct hibernate sql configuration
