@@ -7,6 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -16,6 +17,7 @@ import java.net.http.HttpResponse;
 @RestController
 public class GatewayRouter {
 
+    private final String CONNECTION_ERROR = "{error: \"Request failed because server could not connect to API\"}";
     private final String MISSING_DATA_ERROR = "{error: \"No 'action' OR 'data' present in request\"}";
     private final String BAD_REQUEST_ERROR = "{error: \"Request failed\"}";
     private final HttpClient httpClient = HttpClient.newBuilder()
@@ -61,7 +63,6 @@ public class GatewayRouter {
     )
 
     public String publicRoute(@RequestBody String rawData){
-
         try {
             
             JSONObject rawRequest = new JSONObject(rawData);
@@ -73,62 +74,61 @@ public class GatewayRouter {
             MSRequest requestDetails = RequestMap.reqMap.get(reqAction);
 
             String requestMethod = requestDetails.getMethod();
+
             String requestURL = env.getProperty(requestDetails.getUrlKey());
 
-            JSONObject nextRequest = new JSONObject();
-            nextRequest.put("data", reqData);
-            nextRequest.put("method", requestMethod);
-            nextRequest.put("endpoint", requestURL);
+//            JSONObject nextRequest = new JSONObject();
+//            nextRequest.put("data", reqData);
+//            nextRequest.put("method", requestMethod);
+//            nextRequest.put("endpoint", requestURL);
 
 
-            sendRequest(reqData, requestURL, requestMethod);
-
-            System.out.println(nextRequest);
-
-            return nextRequest.toString();
+            return sendRequest(reqData, requestURL, requestMethod);
+//            System.out.println(nextRequest);
+//
+//            return nextRequest.toString();
 
 
         } catch (JSONException e ) {
+//            e.printStackTrace();
             return MISSING_DATA_ERROR;
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("\nError with request being sent from Gateway\n");
+//            e.printStackTrace();
+//            System.out.println("\nError with request being sent from Gateway\n");
             return BAD_REQUEST_ERROR;
         }
     }
 
-    private void sendRequest( String data, String endpoint, String method) throws Exception {
+    private String sendRequest( String data, String endpoint, String method) throws Exception {
 
         var body = HttpRequest.BodyPublishers.ofString(data);
-        var request = HttpRequest.newBuilder();
+        var requestBuilder = HttpRequest.newBuilder();
 
         switch (method) {
-            case "POST":
-                request.POST(body);
-                break;
-            case "PUT":
-                request.PUT(body);
-                break;
-            case "DELETE":
-                request.DELETE();
-                break;
-            case "GET":
-                request.GET();
-                break;
-            default:
-                System.out.println("\nMETHOD NOT PROVIDED (ln 97 GatewayRouter)");
+            case "POST" -> requestBuilder = requestBuilder.POST(body);
+            case "PUT" -> requestBuilder = requestBuilder.PUT(body);
+            case "DELETE" -> requestBuilder = requestBuilder.DELETE();
+            case "GET" -> requestBuilder = requestBuilder.GET();
+            default -> System.out.println("\nMETHOD NOT PROVIDED (ln 97 GatewayRouter)");
         }
 
-            request
+        HttpRequest builtReq = requestBuilder
                 .uri(URI.create(endpoint))
-                //.setHeader("User-Agent", "") // add request header
                 .header("Content-Type", "application/json")
                 .build();
 
-//        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        try {
+
+            HttpResponse<String> response = httpClient.send(builtReq, HttpResponse.BodyHandlers.ofString());
+            System.out.println("\nStatus Code from request: " + response.statusCode());
+
+            return response.body();
+
+        } catch ( ConnectException e ) {
+            return CONNECTION_ERROR;
+        }
 //
 //        // print status code
-//        System.out.println(response.statusCode());
 //
 //        // print response body
 //        System.out.println(response.body());
