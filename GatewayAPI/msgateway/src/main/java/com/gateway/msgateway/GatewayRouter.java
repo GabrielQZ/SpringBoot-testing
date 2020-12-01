@@ -60,9 +60,11 @@ public class GatewayRouter {
             String requestMethod = requestDetails.getMethod();
 
             String requestURL = env.getProperty(requestDetails.getUrlKey());
-            //the reqDetails url key should never point to a null prop. but incase it does, throw an error message
+            //the reqDetails url key should never point to a null prop. but in case it does, throw an error message
             if (requestURL == null)
                 return GatewayErrors.REQUEST_URL_MISMATCH;
+            else //append the url extension, this allows multiple POST/PUT requests to be made to the same service
+                requestURL += "/" + requestDetails.getUrlExtension();
 
             return sendRequest(reqData, requestURL, requestMethod);
 
@@ -94,7 +96,7 @@ public class GatewayRouter {
             }
 
             //once the method is determined the URI gets added along with headers
-            // (content type doesnt hurt to add for GET/DELETE)
+            // (content type doesn't hurt to add for GET/DELETE)
             HttpRequest builtReq = requestBuilder
                     .uri(URI.create(
                             //'data' gets utilized as a uri extension for GET/DELETE

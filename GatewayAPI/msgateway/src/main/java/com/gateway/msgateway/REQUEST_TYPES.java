@@ -1,8 +1,8 @@
 package com.gateway.msgateway;
 
 public enum REQUEST_TYPES {
-    POST_USER,
+    CREATE_USER,
     LOGIN_USER,
-    GET_USER,
-    DELETE_USER;
+    GET_ONE_USER,
+    DELETE_ONE_USER;
 }
