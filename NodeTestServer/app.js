@@ -4,17 +4,11 @@ const morgan = require('morgan');
 
 const app = express();
 
+const authRouter = require('./routes/authsys')
+const authPort = process.env.AUTHPORT;
+
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(authRouter)
 
-app.post('/', (req, res) => {
-
-  console.log(req.body);
-
-  res.json({
-    message: "user created"
-  })
-})
-
-
-app.listen(2000);
+app.listen(authPort);
