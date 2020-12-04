@@ -1,4 +1,4 @@
-package com.gateway.msgateway;
+package com.microserve.msgateway;
 
 import org.json.JSONException;
 import org.json.JSONObject;

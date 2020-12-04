@@ -1,4 +1,4 @@
-package com.gateway.msgateway;
+package com.microserve.msgateway;
 
 public enum REQUEST_TYPES {
     CREATE_USER,
