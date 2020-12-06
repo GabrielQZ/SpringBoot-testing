@@ -1,5 +1,6 @@
 package com.microserve.authService.controller;
 
+import com.microserve.authService.model.StrippedUser;
 import com.microserve.authService.model.User;
 import com.microserve.authService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,16 @@ public class UserController {
         int _size = size != null ? size : 0;
 
         return service.getPage(_page, _size);
+    }
+
+    @GetMapping("/id")
+    public StrippedUser getUserById(@PathVariable long id) {
+        return service.findById(id).strip();
+    }
+
+    @DeleteMapping("/id")
+    public void deleteUserById(@PathVariable long id) {
+        service.deleteById(id);
     }
 
     @PostMapping("/")

@@ -9,8 +9,9 @@ public class User {
 
     @Id
     @GeneratedValue
-    public long id;
-    //public UUID id = UUID.randomUUID();
+    public UUID id;
+    //public long id;
+
     @Column
     public String email;
     @Column
