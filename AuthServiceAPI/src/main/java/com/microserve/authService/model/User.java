@@ -9,8 +9,8 @@ public class User {
 
     @Id
     @GeneratedValue
-    public UUID id;
-    //public long id;
+//    public UUID id;
+    public long id;
 
     @Column
     public String email;

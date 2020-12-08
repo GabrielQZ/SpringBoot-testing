@@ -29,20 +29,16 @@ public class UserService {
         return database.findAll();
     }
 
-    public Object getPage (int page, int size) {
-
-        Page<User> queryPage = database.findAll(PageRequest.of(page, size));
-
-        Map<String, Object> pageMap = new HashMap<>();
-        pageMap.put("content", queryPage.getContent());
-        pageMap.put("page", page );
-        pageMap.put("size", size );
-        pageMap.put("totalPages", queryPage.getTotalPages());
-        pageMap.put("totalItems", queryPage.getTotalElements());
-
-        return pageMap;
+    public boolean deleteAll() {
+        try {
+            database.deleteAll();
+            return true;
+        } catch ( Exception e) {
+            System.out.println(e.getMessage());
+            //e.printStackTrace();
+            return false;
+        }
     }
-
 
     public void deleteById(Long id) {
         database.deleteById(id);
