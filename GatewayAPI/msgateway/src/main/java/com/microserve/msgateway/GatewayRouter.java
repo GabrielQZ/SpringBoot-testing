@@ -76,10 +76,12 @@ public class GatewayRouter {
             else //append the url extension, this allows multiple POST/PUT requests to be made to the same service
                 requestURL += "/" + requestDetails.getUrlExtension();
 
+            System.out.println(requestURL);
+
             return sendRequest(reqData, requestURL, requestMethod);
 
         } catch (JSONException e ) {
-            //e.printStackTrace();
+//            e.printStackTrace();
             return GatewayErrors.MISSING_DATA_ERROR;
         } catch (Exception e) {
             e.printStackTrace();

@@ -4,13 +4,16 @@ import com.microserve.authService.model.StrippedUser;
 import com.microserve.authService.model.User;
 import com.microserve.authService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    private final static int DEFAULT_PAGE_SIZE = 30;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     UserService service;
@@ -25,25 +28,28 @@ public class UserController {
         return service.findAll();
     }
 
-    @GetMapping("/page")
-    public Object getPage(
-            @RequestParam Integer page,
-            @RequestParam Integer size
-    ) {
-        int _page = page != null ? page : 0;
-        int _size = size != null ? size : 0;
-
-        return service.getPage(_page, _size);
-    }
-
-    @GetMapping("/id")
+    @GetMapping("/id/{id}")
     public StrippedUser getUserById(@PathVariable long id) {
-        return service.findById(id).strip();
+//        return service User.User-clone(id);
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/id/{id}")
     public void deleteUserById(@PathVariable long id) {
-        service.deleteById(id);
+        System.out.println(service.deleteById(id););
+
+    }
+
+    @DeleteMapping("/deleteAll/{adminKey}") //@
+    public boolean deleteAll(@PathVariable String adminKey) {
+        System.out.println(adminKey);
+        String adminSecret = env.getProperty("admin_secret");
+        System.out.println(adminSecret);
+//        if (!adminKey.equals(adminSecret))
+//            return false;
+//        else
+            return true;
+//      return service.deleteAll();
+//        return false;
     }
 
     @PostMapping("/")
