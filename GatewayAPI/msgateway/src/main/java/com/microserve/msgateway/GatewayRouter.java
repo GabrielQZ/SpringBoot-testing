@@ -26,7 +26,6 @@ public class GatewayRouter {
     @Autowired
     private Environment env;
 
-
     //MAIN ROUTES
     //this gateway acts as the one entry point the the entire micro-service system. Some routes are public and some are authorized.
     //authorized routes will pass along headers (where auth keys will be stored) and public routes will not
@@ -76,18 +75,33 @@ public class GatewayRouter {
             else //append the url extension, this allows multiple POST/PUT requests to be made to the same service
                 requestURL += "/" + requestDetails.getUrlExtension();
 
-            System.out.println(requestURL);
+            //check that the environment is set in the application.properties, if so and the in development, log the request data
+            try {
+                if ( env.getProperty("server.environment").equals("development"))
+                    logRequest(requestURL, requestMethod, reqData);
+            } catch (NullPointerException e) { return GatewayErrors.SERVER_ENVIRONMENT_NULL; };
 
+            //finally make the request to the service and send back its response
             return sendRequest(reqData, requestURL, requestMethod);
 
         } catch (JSONException e ) {
-//            e.printStackTrace();
+            //e.printStackTrace();
             return GatewayErrors.MISSING_DATA_ERROR;
         } catch (Exception e) {
             e.printStackTrace();
             //System.out.println("\nError with request being sent from Gateway\n");
             return GatewayErrors.UNKNOWN_REQUEST_ERROR;
         }
+    }
+
+    private void logRequest(String requestURL, String requestMethod, String reqData) {
+
+        System.out.println(
+                requestMethod.equals("GET") || requestMethod.equals("DELETE")
+                        ? "\n"+requestMethod +": "+ requestURL + "/" + reqData
+                        : "\n"+requestMethod +": "+ requestURL
+        );
+
     }
 
     private String sendRequest( String data, String endpoint, String method) throws Exception {

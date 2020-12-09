@@ -11,4 +11,5 @@ public class GatewayErrors {
     public static final String REQUEST_NEEDS_AUTH = "{error: \"Request not made: This request needs authorization to be made\"}";
     public static final String CHECK_PROTOCOL_ERROR = "{error: \"Request failed: Check URI protocol\"}";
     public static final String BAD_REQUEST_DATA = "{error: \"Request not made: Request data caused error in Gateway\"}";
+    public static final String SERVER_ENVIRONMENT_NULL = "{error: \"Request not made: Gateway environment needs to be set\"}";
 }
