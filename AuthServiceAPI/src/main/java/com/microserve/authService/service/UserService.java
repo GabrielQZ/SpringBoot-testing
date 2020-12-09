@@ -40,8 +40,16 @@ public class UserService {
         }
     }
 
-    public void deleteById(Long id) {
-        database.deleteById(id);
+    public boolean deleteById(Long id) {
+        try {
+            database.deleteById(id);
+            return true;
+        } catch ( Exception e) {
+            System.out.println(e.getMessage());
+            //e.printStackTrace();
+            return false;
+        }
+
     }
 
 
