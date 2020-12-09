@@ -2,6 +2,8 @@ package com.microserve.authService.controller;
 
 import com.microserve.authService.model.User;
 import com.microserve.authService.service.UserService;
+import com.microserve.authService.validator.UserValidator;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
@@ -64,8 +66,13 @@ public class UserController {
     public Object postUser(
             @RequestBody User user
     ) {
-        //System.out.println(user.email+" "+user.password);
-        return service.save(user);
+
+        JSONObject newUserErrors = UserValidator.validateNewUser(user);
+        System.out.println(newUserErrors);
+        if (!newUserErrors.isEmpty())
+            return newUserErrors.toString();
+        else
+            return service.save(user);
     }
 
 
