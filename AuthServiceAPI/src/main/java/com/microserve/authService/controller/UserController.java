@@ -29,33 +29,41 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    public StrippedUser getUserById(@PathVariable long id) {
+    public Object getUserById(@PathVariable long id) {
 //        return service User.User-clone(id);
+        User foundUser = service.findById(id);
+        if (foundUser == null)
+            return "no user found";
+        else
+            return foundUser.strip();
     }
 
     @DeleteMapping("/id/{id}")
-    public void deleteUserById(@PathVariable long id) {
-        System.out.println(service.deleteById(id););
-
+    public String deleteUserById(@PathVariable long id) {
+        boolean wasDeleted = service.deleteById(id);
+        System.out.println(wasDeleted);
+        if (wasDeleted)
+            return "User deleted successfully";
+        else
+            return "Error deleting user or user not found";
     }
 
     @DeleteMapping("/deleteAll/{adminKey}") //@
     public boolean deleteAll(@PathVariable String adminKey) {
-        System.out.println(adminKey);
         String adminSecret = env.getProperty("admin_secret");
-        System.out.println(adminSecret);
-//        if (!adminKey.equals(adminSecret))
-//            return false;
-//        else
-            return true;
-//      return service.deleteAll();
-//        return false;
+
+        System.out.println("AuthKey(User): " + adminKey + "\nAuthKey(Server): " + adminSecret);
+        if (!adminKey.equals(adminSecret))
+            return false;
+        else
+            return service.deleteAll();
     }
 
     @PostMapping("/")
     public Object postUser(
             @RequestBody User user
     ) {
+        System.out.println(user.email + " " + user.password);
         return service.save(user);
     }
 
