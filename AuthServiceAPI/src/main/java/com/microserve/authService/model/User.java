@@ -12,10 +12,19 @@ public class User {
 //    public UUID id;
     public long id;
 
-    @Column
+//    @Column
     public String email;
-    @Column
+//    @Column
     public String password;
+
+    public User (String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    public User() {
+
+    }
 
     public StrippedUser strip() {
         return new StrippedUser(this);
