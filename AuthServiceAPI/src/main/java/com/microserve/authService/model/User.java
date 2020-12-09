@@ -1,6 +1,6 @@
 package com.microserve.authService.model;
 
-import org.hibernate.annotations.Type;
+import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -10,24 +10,14 @@ import java.util.UUID;
 public class User {
 
     @Id
-//    @Type(type = "pg-uuid")
     @GeneratedValue
     public UUID id;
-//    public long id;
-
-//    @Column
+    @Transient
+    public Object user;
+    @Column
     public String email;
-//    @Column
+    @Column
     public String password;
-
-    public User (String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
-
-    public User() {
-
-    }
 
     public StrippedUser strip() {
         return new StrippedUser(this);
