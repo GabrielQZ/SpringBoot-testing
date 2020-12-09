@@ -2,6 +2,7 @@ package com.microserve.authService.controller;
 
 import com.microserve.authService.model.User;
 import com.microserve.authService.service.UserService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
@@ -62,10 +63,13 @@ public class UserController {
 
     @PostMapping("/")
     public Object postUser(
-            @RequestBody User user
+            @RequestBody User rawData
     ) {
-        System.out.println(user.email + " " + user.password);
-        return service.save(user);
+        JSONObject data = new JSONObject(rawData);
+        JSONObject userData = new JSONObject(data);
+        System.out.println(userData.get("email")+ " " + userData.get("password"));
+//        return service.save(user);
+        return  "";
     }
 
 
