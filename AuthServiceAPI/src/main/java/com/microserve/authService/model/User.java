@@ -1,11 +1,8 @@
 package com.microserve.authService.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.json.JSONObject;
 
 import javax.persistence.*;
-import java.beans.Transient;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,11 +17,14 @@ public class User {
     public String email;
     @Column
     public String password;
+    @Column
+    public String name;
 
     @JsonProperty("user")
     public void unpackData(Map<String, String> user) {
         email = user.get("email");
         password = user.get("password");
+        name = user.get("name");
     }
 
     public StrippedUser strip() {
