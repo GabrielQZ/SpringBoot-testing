@@ -1,11 +1,12 @@
 package com.microserve.authService.controller;
 
-import com.microserve.authService.model.StrippedUser;
 import com.microserve.authService.model.User;
 import com.microserve.authService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("/id/{id}")
-    public Object getUserById(@PathVariable long id) {
+    public Object getUserById(@PathVariable UUID id) {
 //        return service User.User-clone(id);
         User foundUser = service.findById(id);
         if (foundUser == null)
@@ -39,7 +40,7 @@ public class UserController {
     }
 
     @DeleteMapping("/id/{id}")
-    public String deleteUserById(@PathVariable long id) {
+    public String deleteUserById(@PathVariable UUID id) {
         boolean wasDeleted = service.deleteById(id);
         System.out.println(wasDeleted);
         if (wasDeleted)
@@ -52,7 +53,7 @@ public class UserController {
     public boolean deleteAll(@PathVariable String adminKey) {
         String adminSecret = env.getProperty("admin_secret");
 
-        System.out.println("AuthKey(User): " + adminKey + "\nAuthKey(Server): " + adminSecret);
+        //System.out.println("AuthKey(User): " + adminKey + "\nAuthKey(Server): " + adminSecret);
         if (!adminKey.equals(adminSecret))
             return false;
         else
