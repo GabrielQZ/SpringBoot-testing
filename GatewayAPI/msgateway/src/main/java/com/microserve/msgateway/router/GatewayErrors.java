@@ -1,4 +1,4 @@
-package com.microserve.msgateway;
+package com.microserve.msgateway.router;
 
 public class GatewayErrors {
 

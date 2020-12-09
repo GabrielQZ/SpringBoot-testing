@@ -1,5 +1,7 @@
-package com.microserve.msgateway;
+package com.microserve.msgateway.router;
 
+import com.microserve.msgateway.request.MSRequest;
+import com.microserve.msgateway.request.RequestMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +32,6 @@ public class GatewayRouter {
     //this gateway acts as the one entry point the the entire micro-service system. Some routes are public and some are authorized.
     //authorized routes will pass along headers (where auth keys will be stored) and public routes will not
     //endpoints to other MS servers will be stored privately in the gateways code
-
-    @GetMapping("/test")
-    public String testGet() {
-        return "test";
-    }
 
     //AUTHORIZED ROUTE
     @PutMapping("/auth")
@@ -76,10 +73,8 @@ public class GatewayRouter {
                 requestURL += "/" + requestDetails.getUrlExtension();
 
             //check that the environment is set in the application.properties, if so and the in development, log the request data
-            try {
-                if ( env.getProperty("server.environment").equals("development"))
-                    logRequest(requestURL, requestMethod, reqData);
-            } catch (NullPointerException e) { return GatewayErrors.SERVER_ENVIRONMENT_NULL; };
+            if (env.getProperty("server.environment").equals("development"))
+                logRequest(requestURL, requestMethod, reqData);
 
             //finally make the request to the service and send back its response
             return sendRequest(reqData, requestURL, requestMethod);
@@ -87,6 +82,8 @@ public class GatewayRouter {
         } catch (JSONException e ) {
             //e.printStackTrace();
             return GatewayErrors.MISSING_DATA_ERROR;
+        } catch (NullPointerException e) {
+            return GatewayErrors.SERVER_ENVIRONMENT_NULL;
         } catch (Exception e) {
             e.printStackTrace();
             //System.out.println("\nError with request being sent from Gateway\n");
