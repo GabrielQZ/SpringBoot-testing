@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -17,7 +18,7 @@ public class UserService {
     @Autowired
     UserRepository database;
 
-    public User findById(Long id) {
+    public User findById(UUID id) {
         return database.findById(id).orElse(null);
     }
 
@@ -40,7 +41,7 @@ public class UserService {
         }
     }
 
-    public boolean deleteById(Long id) {
+    public boolean deleteById(UUID id) {
         try {
             database.deleteById(id);
             return true;
