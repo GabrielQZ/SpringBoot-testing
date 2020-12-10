@@ -14,11 +14,11 @@ public class User {
     @GeneratedValue
     public UUID id;
     @Column
+    public String name;
+    @Column
     public String email;
     @Column
     public String password;
-    @Column
-    public String name;
 
     @JsonProperty("user")
     public void unpackData(Map<String, String> user) {
@@ -29,6 +29,12 @@ public class User {
 
     public StrippedUser strip() {
         return new StrippedUser(this);
+    }
+
+    public void sanitizeData () {
+        name = name != null ? name.strip() : null;
+        email = email != null ? email.strip() : null;
+        password = password != null ? password.strip() : null;
     }
 
 }
