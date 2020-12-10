@@ -66,8 +66,8 @@ public class UserController {
     public Object postUser(
             @RequestBody User user
     ) {
-
-        JSONObject newUserErrors = UserValidator.validateNewUser(user);
+        user.sanitizeData();
+        JSONObject newUserErrors = UserValidator.validateNewUser(user, service);
         System.out.println(newUserErrors);
         if (!newUserErrors.isEmpty())
             return newUserErrors.toString();
