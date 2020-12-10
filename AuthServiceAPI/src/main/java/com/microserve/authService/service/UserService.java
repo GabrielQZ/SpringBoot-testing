@@ -19,6 +19,14 @@ public class UserService {
         return database.findById(id).orElse(null);
     }
 
+    public boolean emailInUse(String email) {
+        return database.countByEmail(email) > 0;
+    }
+
+    public boolean nameInUse(String name) {
+        return database.countByName(name) > 0;
+    }
+
     public User save(User user) {
         return database.save(user);
     }
