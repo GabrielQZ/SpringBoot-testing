@@ -28,8 +28,8 @@ public class UserValidator {
 
     private static final HashMap<String, Integer> valueConstraints = new HashMap<>() {
         {
-            put("nameMax", USERNAME_MAX);
-            put("nameMin", USERNAME_MIN);
+            put("usernameMax", USERNAME_MAX);
+            put("usernameMin", USERNAME_MIN);
             put("passwordMax", PASSWORD_MAX);
             put("passwordMin", PASSWORD_MIN);
             put("emailMax", EMAIL_MAX);
@@ -75,7 +75,7 @@ public class UserValidator {
 
                 //specific checks for fields
                 switch (fieldName) {
-                    case "name":
+                    case "username":
                         if (service.nameInUse(value))
                             fieldErrors.add(
                                     UserValidationErrors.credentialInUseError(fieldName, value));

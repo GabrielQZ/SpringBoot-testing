@@ -68,7 +68,7 @@ public class UserController {
     ) {
         user.sanitizeData();
         JSONObject newUserErrors = UserValidator.validateNewUser(user, service);
-        System.out.println(newUserErrors);
+        //System.out.println(newUserErrors);
         if (!newUserErrors.isEmpty())
             return newUserErrors.toString();
         else

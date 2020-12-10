@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    int countByName(String name);
+    int countByUsername(String username);
 
     int countByEmail(String email);
 

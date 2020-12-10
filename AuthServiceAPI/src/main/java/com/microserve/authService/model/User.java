@@ -14,7 +14,7 @@ public class User {
     @GeneratedValue
     public UUID id;
     @Column
-    public String name;
+    public String username;
     @Column
     public String email;
     @Column
@@ -24,7 +24,7 @@ public class User {
     public void unpackData(Map<String, String> user) {
         email = user.get("email");
         password = user.get("password");
-        name = user.get("name");
+        username = user.get("username");
     }
 
     public StrippedUser strip() {
@@ -32,7 +32,7 @@ public class User {
     }
 
     public void sanitizeData () {
-        name = name != null ? name.strip() : null;
+        username = username != null ? username.strip() : null;
         email = email != null ? email.strip() : null;
         password = password != null ? password.strip() : null;
     }

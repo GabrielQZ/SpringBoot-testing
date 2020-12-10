@@ -23,8 +23,8 @@ public class UserService {
         return database.countByEmail(email) > 0;
     }
 
-    public boolean nameInUse(String name) {
-        return database.countByName(name) > 0;
+    public boolean nameInUse(String username) {
+        return database.countByUsername(username) > 0;
     }
 
     public User save(User user) {
