@@ -1,10 +1,12 @@
 package com.microserve.authService.validator;
 
 import com.microserve.authService.model.User;
+import com.microserve.authService.service.UserService;
 import org.json.JSONObject;
-
+import org.apache.commons.validator.routines.EmailValidator;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class UserValidator {
 
@@ -19,6 +21,11 @@ public class UserValidator {
     static private final int EMAIL_MAX = 256;
     static private final int EMAIL_MIN = 5;
 
+    //PASSWORD REGEX
+    static private final Pattern specialChar = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+    static private final Pattern hasUpperCase = Pattern.compile("[A-Z]");
+    static private final Pattern hasLowerCase = Pattern.compile("[a-z]");
+
     private static final HashMap<String, Integer> valueConstraints = new HashMap<>() {
         {
             put("nameMax", USERNAME_MAX);
@@ -30,7 +37,7 @@ public class UserValidator {
         }
     };
 
-    static public JSONObject validateNewUser (User newUser) {
+    static public JSONObject validateNewUser(User newUser, UserService service) {
         //get all the fields in User to loop through and preform checks (validation)
         Field[] userFields = User.class.getDeclaredFields();
         //error object that will be returned to client if not empty
@@ -48,10 +55,12 @@ public class UserValidator {
                 //general validation check (make sure data is present)
                 Object fieldValue = field.get(newUser);
                 if (fieldValue == null ) {
-                    fieldErrors.add(UserValidationErrors.requiredError(fieldName));
+                    fieldErrors.add(
+                            UserValidationErrors.requiredError(fieldName));
                     continue;
                 } else if (!(fieldValue instanceof String)) {
-                    fieldErrors.add(UserValidationErrors.requiredError(fieldName));
+                    fieldErrors.add(
+                            UserValidationErrors.requiredError(fieldName));
                     continue;
                 }
 
@@ -61,16 +70,29 @@ public class UserValidator {
                 int minLen = valueConstraints.get(fieldName+"Min");
                 int maxLen = valueConstraints.get(fieldName+"Max");
                 if (value.length() > maxLen || value.length() < minLen )
-                    fieldErrors.add(UserValidationErrors.invalidLengthError(fieldName, minLen, maxLen));
+                    fieldErrors.add(
+                            UserValidationErrors.invalidLengthError(fieldName, minLen, maxLen));
 
                 //specific checks for fields
                 switch (fieldName) {
                     case "name":
-
+                        if (service.nameInUse(value))
+                            fieldErrors.add(
+                                    UserValidationErrors.credentialInUseError(fieldName, value));
                       break;
                     case "email":
+                        if (service.emailInUse(value))
+                            fieldErrors.add(
+                                    UserValidationErrors.credentialInUseError(fieldName, value));
+                        else if (!EmailValidator.getInstance().isValid(value))
+                            fieldErrors.add(
+                                    UserValidationErrors.invalidEmailError(value));
                         break;
                     case "password":
+                        if (!specialChar.matcher(value).find())
+                            fieldErrors.add(UserValidationErrors.passwordSpecialCharError());
+                        if (!hasLowerCase.matcher(value).find() || !hasUpperCase.matcher(value).find() )
+                            fieldErrors.add(UserValidationErrors.passwordCaseCharError());
                         break;
                     default:
                         System.out.println("Something slipped through user validation, fieldName: " + fieldName );
