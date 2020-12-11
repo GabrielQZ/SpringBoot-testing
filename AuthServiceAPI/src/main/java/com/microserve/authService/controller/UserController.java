@@ -1,6 +1,7 @@
 package com.microserve.authService.controller;
 
 import com.microserve.authService.model.User;
+import com.microserve.authService.model.UserCredentials;
 import com.microserve.authService.service.UserService;
 import com.microserve.authService.validator.UserValidator;
 import org.json.JSONObject;
@@ -53,7 +54,7 @@ public class UserController {
 
     @DeleteMapping("/deleteAll/{adminKey}") //@
     public boolean deleteAll(@PathVariable String adminKey) {
-        String adminSecret = env.getProperty("admin_secret");
+        String adminSecret = env.getProperty("admin.secret");
 
         //System.out.println("AuthKey(User): " + adminKey + "\nAuthKey(Server): " + adminSecret);
         if (!adminKey.equals(adminSecret))
@@ -73,6 +74,13 @@ public class UserController {
             return newUserErrors.toString();
         else
             return service.save(user);
+    }
+
+    @PutMapping("/login")
+    public Object loginUser (
+            @RequestBody UserCredentials credentials
+    ) {
+        return service.loginUser(credentials);
     }
 
 
