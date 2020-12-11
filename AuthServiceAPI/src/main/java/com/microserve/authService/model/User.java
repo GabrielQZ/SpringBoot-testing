@@ -1,6 +1,7 @@
 package com.microserve.authService.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.*;
 import java.util.Map;
@@ -34,7 +35,9 @@ public class User {
     public void sanitizeData () {
         username = username != null ? username.strip() : null;
         email = email != null ? email.strip() : null;
-        password = password != null ? password.strip() : null;
+        if (password != null)
+            password = BCrypt.hashpw( password, BCrypt.gensalt());
+
     }
 
 }
