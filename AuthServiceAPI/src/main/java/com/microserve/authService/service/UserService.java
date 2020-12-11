@@ -1,9 +1,14 @@
 package com.microserve.authService.service;
 
 import com.microserve.authService.model.User;
+import com.microserve.authService.model.UserCredentials;
 import com.microserve.authService.repository.UserRepository;
+import com.microserve.authService.validator.UserJWT;
+import com.microserve.authService.validator.UserValidationErrors;
+import com.microserve.authService.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +38,26 @@ public class UserService {
 
     public List<User> findAll() {
         return database.findAll();
+    }
+
+    public Object loginUser (UserCredentials credentials) {
+        String credential = credentials.credential;
+        String password = credentials.password;
+        User foundUser;
+        if (UserValidator.isEmail(credential))
+            foundUser = database.findByEmail(credential).get(0);
+        else
+            foundUser = database.findByUsername(credential).get(0);
+
+        if (foundUser == null)
+            return UserValidationErrors.credentialsDoNotMatch();
+
+        boolean credentialsMatch = BCrypt.checkpw(password, foundUser.password);
+
+        if (credentialsMatch)
+            return new UserJWT().createJWT(foundUser);
+        else
+            return UserValidationErrors.credentialsDoNotMatch();
     }
 
     public boolean deleteAll() {
