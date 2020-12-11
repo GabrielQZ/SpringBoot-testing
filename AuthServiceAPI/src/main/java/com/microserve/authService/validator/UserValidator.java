@@ -4,11 +4,13 @@ import com.microserve.authService.model.User;
 import com.microserve.authService.service.UserService;
 import org.json.JSONObject;
 import org.apache.commons.validator.routines.EmailValidator;
+
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class UserValidator {
+
 
     //this set is immutable and is used to ignore validation for fields defined by server
     static private final Set<String> ignoredField = Set.of("id");
@@ -36,6 +38,10 @@ public class UserValidator {
             put("emailMin", EMAIL_MIN);
         }
     };
+
+    static public boolean isEmail(String credential) {
+        return EmailValidator.getInstance().isValid(credential);
+    }
 
     static public JSONObject validateNewUser(User newUser, UserService service) {
         //get all the fields in User to loop through and preform checks (validation)
@@ -108,4 +114,6 @@ public class UserValidator {
         }
         return  errors;
     }
+
+
 }

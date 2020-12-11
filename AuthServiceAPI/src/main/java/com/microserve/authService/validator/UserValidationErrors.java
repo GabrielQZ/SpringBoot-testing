@@ -1,6 +1,16 @@
 package com.microserve.authService.validator;
 
+import org.json.JSONObject;
+
 public class UserValidationErrors {
+
+    public static JSONObject credentialsDoNotMatch () {
+        return new JSONObject("{error: \"Login Failed: Credentials Do Not Match\"}");
+    }
+
+    public static JSONObject loggingInServerError () {
+        return new JSONObject("{error: \"Login Failed: Server Could Not Log You In\"}");
+    }
 
     protected static String requiredError(String fieldName) {
         return fieldName + " is required to create an account.";
@@ -28,5 +38,9 @@ public class UserValidationErrors {
 
     public static String passwordCaseCharError() {
         return "Passwords must contain at least one uppercase and one lowercase character.";
+    }
+
+    public static JSONObject jwtError(String message) {
+        return new JSONObject("{error: " + message + " }");
     }
 }
