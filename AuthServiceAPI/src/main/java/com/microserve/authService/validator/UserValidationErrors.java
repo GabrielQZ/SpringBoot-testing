@@ -4,12 +4,12 @@ import org.json.JSONObject;
 
 public class UserValidationErrors {
 
-    public static JSONObject credentialsDoNotMatch () {
-        return new JSONObject("{error: \"Login Failed: Credentials Do Not Match\"}");
+    public static String credentialsDoNotMatch () {
+        return new JSONObject("{error: \"Login Failed: Credentials Do Not Match\"}").toString();
     }
 
-    public static JSONObject loggingInServerError () {
-        return new JSONObject("{error: \"Login Failed: Server Could Not Log You In\"}");
+    public static String loggingInServerError () {
+        return new JSONObject("{error: \"Login Failed: Server Could Not Log You In\"}").toString();
     }
 
     protected static String requiredError(String fieldName) {
@@ -40,7 +40,11 @@ public class UserValidationErrors {
         return "Passwords must contain at least one uppercase and one lowercase character.";
     }
 
-    public static JSONObject jwtError(String message) {
-        return new JSONObject("{error: " + message + " }");
+    public static String unhandledError(String message) {
+        return new JSONObject("{error: " + message + " }").toString();
+    }
+
+    public static Object invalidRequestDataFormat() {
+        return new JSONObject("{error: Request Data Was In An Invalid Format }").toString();
     }
 }

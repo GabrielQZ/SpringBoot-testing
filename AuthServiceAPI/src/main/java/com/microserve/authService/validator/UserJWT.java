@@ -1,5 +1,6 @@
 package com.microserve.authService.validator;
 
+import com.microserve.authService.controller.UserController;
 import com.microserve.authService.model.User;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -15,17 +16,14 @@ import java.util.Date;
 
 public class UserJWT {
 
-    @Autowired
-    Environment env;
-
-    public Object createJWT(User foundUser) {
+    public Object createJWT(User foundUser, String jwtSecret) {
         try {
             Instant now = Instant.now();
 
             Date issuedAt = Date.from(now);
             Date expiresAt = Date.from(now.plus(2, ChronoUnit.HOURS));
 
-            SecretKey key = Keys.hmacShaKeyFor(env.getProperty("jwt.key").getBytes());
+            SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
             String jwt = Jwts
                     .builder()
@@ -40,11 +38,11 @@ public class UserJWT {
             JSONObject loginData = new JSONObject();
             loginData.put("token", jwt);
 
-            return loginData;
+            return loginData.toString();
 
         } catch (JwtException e) {
             System.out.println(e.getMessage());
-            return UserValidationErrors.jwtError(e.getMessage());
+            return UserValidationErrors.unhandledError(e.getMessage());
         } catch (NullPointerException e) {
             System.out.println("\n\nJWT secret must not be set in env vars");
             System.out.println(e.getMessage());
