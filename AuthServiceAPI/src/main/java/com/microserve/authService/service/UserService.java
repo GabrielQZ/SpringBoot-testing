@@ -8,6 +8,7 @@ import com.microserve.authService.validator.UserValidationErrors;
 import com.microserve.authService.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ public class UserService {
 
     @Autowired
     UserRepository database;
+
+    @Autowired
+    Environment env;
 
     public User findById(UUID id) {
         return database.findById(id).orElse(null);
@@ -40,7 +44,7 @@ public class UserService {
         return database.findAll();
     }
 
-    public Object loginUser(UserCredentials credentials, String jwtSecret) {
+    public Object loginUser(UserCredentials credentials) {
         try {
             String credential = credentials.credential;
             String password = credentials.password;
@@ -56,16 +60,21 @@ public class UserService {
 
                 boolean credentialsMatch = BCrypt.checkpw(password, foundUser.password);
 
-                if (credentialsMatch)
-                    return new UserJWT().createJWT(foundUser, jwtSecret);
-                else
+                if (credentialsMatch) {
+                    String jwtSecret = env.getProperty("jwt.secret");
+                    return UserJWT.createJWT(foundUser, jwtSecret);
+                } else
                     return UserValidationErrors.credentialsDoNotMatch();
             } else {
 
                 return UserValidationErrors.credentialsDoNotMatch();
             }
 
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
+            System.out.println("\n\nJWT secret must not be set in env vars");
+            System.out.println(e.getMessage());
+            return UserValidationErrors.loggingInServerError();
+        }catch (Exception e) {
             System.out.println(e.getMessage());
             return UserValidationErrors.loggingInServerError();
         }

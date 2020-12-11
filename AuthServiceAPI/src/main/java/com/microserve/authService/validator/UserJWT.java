@@ -7,8 +7,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -16,7 +22,7 @@ import java.util.Date;
 
 public class UserJWT {
 
-    public Object createJWT(User foundUser, String jwtSecret) {
+    public static Object createJWT(User foundUser, String jwtSecret) {
         try {
             Instant now = Instant.now();
 
@@ -43,11 +49,6 @@ public class UserJWT {
         } catch (JwtException e) {
             System.out.println(e.getMessage());
             return UserValidationErrors.unhandledError(e.getMessage());
-        } catch (NullPointerException e) {
-            System.out.println("\n\nJWT secret must not be set in env vars");
-            System.out.println(e.getMessage());
-
-            return UserValidationErrors.loggingInServerError();
         } catch ( Exception e) {
             System.out.println(e.getMessage());
             return UserValidationErrors.loggingInServerError();

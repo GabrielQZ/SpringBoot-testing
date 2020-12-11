@@ -83,10 +83,8 @@ public class UserController {
     ) {
         try {
 
-            String jwtSecret = env.getProperty("jwt.secret");
-
             credentials.sanitizeData();
-            return service.loginUser(credentials, jwtSecret);
+            return service.loginUser(credentials);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return UserValidationErrors.unhandledError(e.getMessage());
