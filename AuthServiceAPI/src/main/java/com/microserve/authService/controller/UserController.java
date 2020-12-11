@@ -3,6 +3,7 @@ package com.microserve.authService.controller;
 import com.microserve.authService.model.User;
 import com.microserve.authService.model.UserCredentials;
 import com.microserve.authService.service.UserService;
+import com.microserve.authService.validator.UserValidationErrors;
 import com.microserve.authService.validator.UserValidator;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class UserController {
 
 
     @Autowired
-    private Environment env;
+    Environment env;
 
     @Autowired
     UserService service;
@@ -80,7 +81,20 @@ public class UserController {
     public Object loginUser (
             @RequestBody UserCredentials credentials
     ) {
-        return service.loginUser(credentials);
+        try {
+
+            String jwtSecret = env.getProperty("jwt.secret");
+
+            credentials.sanitizeData();
+            return service.loginUser(credentials, jwtSecret);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return UserValidationErrors.unhandledError(e.getMessage());
+        }
+    }
+
+    public String getJWTkey () {
+        return env.getProperty("jwt.secret");
     }
 
 
