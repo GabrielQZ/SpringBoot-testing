@@ -40,24 +40,36 @@ public class UserService {
         return database.findAll();
     }
 
-    public Object loginUser (UserCredentials credentials) {
-        String credential = credentials.credential;
-        String password = credentials.password;
-        User foundUser;
-        if (UserValidator.isEmail(credential))
-            foundUser = database.findByEmail(credential).get(0);
-        else
-            foundUser = database.findByUsername(credential).get(0);
+    public Object loginUser(UserCredentials credentials, String jwtSecret) {
+        try {
+            String credential = credentials.credential;
+            String password = credentials.password;
+            List<User> userQueryResults;
+            if (UserValidator.isEmail(credential))
+                userQueryResults = database.findByEmail(credential);
+            else
+                userQueryResults = database.findByUsername(credential);
 
-        if (foundUser == null)
-            return UserValidationErrors.credentialsDoNotMatch();
+            if (userQueryResults.size() == 1 ) {
 
-        boolean credentialsMatch = BCrypt.checkpw(password, foundUser.password);
+                User foundUser = userQueryResults.get(0);
 
-        if (credentialsMatch)
-            return new UserJWT().createJWT(foundUser);
-        else
-            return UserValidationErrors.credentialsDoNotMatch();
+                boolean credentialsMatch = BCrypt.checkpw(password, foundUser.password);
+
+                if (credentialsMatch)
+                    return new UserJWT().createJWT(foundUser, jwtSecret);
+                else
+                    return UserValidationErrors.credentialsDoNotMatch();
+            } else {
+
+                return UserValidationErrors.credentialsDoNotMatch();
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return UserValidationErrors.loggingInServerError();
+        }
+
     }
 
     public boolean deleteAll() {
