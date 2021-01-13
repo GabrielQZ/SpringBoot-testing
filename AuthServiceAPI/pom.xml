@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.microserve</groupId>
-	<artifactId>hibernateDemo</artifactId>
+	<artifactId>auth</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>hibernateDemo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>userAuth</name>
+	<description>serivce to authenticate user</description>
 
 	<properties>
 		<java.version>15</java.version>
