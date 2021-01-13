@@ -5,11 +5,14 @@ import com.microserve.authService.model.UserCredentials;
 import com.microserve.authService.service.UserService;
 import com.microserve.authService.validator.UserValidationErrors;
 import com.microserve.authService.validator.UserValidator;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.SecretKey;
 import java.util.UUID;
 
 @RestController
@@ -91,9 +94,22 @@ public class UserController {
         }
     }
 
-    public String getJWTkey () {
-        return env.getProperty("jwt.secret");
-    }
+    @GetMapping("/testjwt")
+    public Object testJWT (
+            @RequestHeader(value = "capstone-user-auth") String jwt
+    ) {
+        try {
+            SecretKey key = Keys.hmacShaKeyFor(env.getProperty("jwt.secret").getBytes());
 
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(jwt);
+            return true;
+        } catch (Exception e ) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 
 }
